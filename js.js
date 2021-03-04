@@ -30,8 +30,7 @@ var answers = {
   ],
 };
 var passage = Object.values(answers);
-passage = passage.reduce((res, elem) => res + '' + elem)
-console.log(passage);
+passage = passage.reduce((res, elem) => res + " " + elem);
 
 function formatAMPM(date) {
   var hours = date.getHours();
