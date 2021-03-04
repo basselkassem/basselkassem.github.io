@@ -1,35 +1,37 @@
 var answers = {
-  "whoIs": [
+  whoIs: [
     "Bassel is a machine learning engineer passionate about applying math in real-world problems.",
     "He also likes to read books and play chess in his free time.",
   ],
-  "workExp":[
+  workExp: [
     "Bassel has +4 years of professional experience in software development.",
     "He worked as software developer, web developer and assistant teacher.",
-    "To have a closer look at his work experience, please have a look at his "+
-    "<a target = '_blank', href ='https://www.linkedin.com/in/bassel-sh-k/'> Linkedin account</a>",
+    "To have a closer look at his work experience, please have a look at his " +
+      "<a target = '_blank', href ='https://www.linkedin.com/in/bassel-sh-k/'> Linkedin account</a>",
   ],
-  "education": [
+  education: [
     "Bassel studied information systems engineering in HIAST(Syria).",
     "He was busy for the last 3 years learning about AI and machine learning.",
-    "To have a closer look at his education, please have a look at his "+
-    "<a target = '_blank', href ='https://www.linkedin.com/in/bassel-sh-k/'> Linkedin account</a>",
+    "To have a closer look at his education, please have a look at his " +
+      "<a target = '_blank', href ='https://www.linkedin.com/in/bassel-sh-k/'> Linkedin account</a>",
   ],
-  "skills": [
+  skills: [
     "Bassel is very skilled in software engineering and machine learning.",
     "He has a good experience in python, tensorflow and data science tools.",
     "He can also cook teasty food.",
-    "To have a closer look at his skills, please have a look at his "+
-    "<a target = '_blank', href ='https://www.linkedin.com/in/bassel-sh-k/'> Linkedin account</a>",
- 
+    "To have a closer look at his skills, please have a look at his " +
+      "<a target = '_blank', href ='https://www.linkedin.com/in/bassel-sh-k/'> Linkedin account</a>",
   ],
-  "projects": [
+  projects: [
     "Bassel demonstrated his skills through delivering many machine learning projects.",
     "He worked on many case studies from computer vision and NLP.",
-    "To have a closer look at his work, have a look at his "+
-    "<a target = '_blank', href ='https://github.com/basselkassem/'> Github account</a>",
+    "To have a closer look at his work, have a look at his " +
+      "<a target = '_blank', href ='https://github.com/basselkassem/'> Github account</a>",
   ],
 };
+var passage = Object.values(answers);
+passage = passage.reduce((res, elem) => res + '' + elem)
+console.log(passage);
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -41,8 +43,9 @@ function formatAMPM(date) {
   var strTime = hours + ":" + minutes + " " + ampm;
   return strTime;
 }
-function getRobotMsg(text, date){
-    return  '<div class="incoming_msg">' +
+function getRobotMsg(text, date) {
+  return (
+    '<div class="incoming_msg">' +
     '<div class="incoming_msg_img">' +
     '<img src="imgs/robot.webp" alt="robot">' +
     "</div>" +
@@ -56,10 +59,12 @@ function getRobotMsg(text, date){
     "</span>" +
     "</div>" +
     "</div>" +
-    "</div>";
+    "</div>"
+  );
 }
 function getUserMsg(text, date) {
-    return '<div class="outgoing_msg">' +
+  return (
+    '<div class="outgoing_msg">' +
     '<div class="sent_msg">' +
     "<p>" +
     text +
@@ -68,7 +73,8 @@ function getUserMsg(text, date) {
     date +
     "</span>" +
     "</div>" +
-    "</div>";
+    "</div>"
+  );
 }
 function insertChat(who, text, time) {
   if (time === undefined) {
@@ -78,66 +84,79 @@ function insertChat(who, text, time) {
   var date = formatAMPM(new Date());
 
   if (who == "me") {
-    control = getUserMsg(text, date)
+    control = getUserMsg(text, date);
   } else {
-    control = getRobotMsg(text, date)
+    control = getRobotMsg(text, date);
   }
   setTimeout(function () {
     $(".msg_history").append(control);
-    $('.msg_history ').animate({
-        scrollTop: $('.msg_history').prop("scrollHeight")
-    }, 500);
+    $(".msg_history ").animate(
+      {
+        scrollTop: $(".msg_history").prop("scrollHeight"),
+      },
+      500
+    );
   }, time);
 }
 function resetChat() {
   $(".msg_history").empty();
 }
 
-$(".write_msg").on("keydown", function (e) {
-  if (e.which == 13) {
-    var text = $(this).val();
-    if (text !== "") {
-      insertChat("me", text);
-      $(this).val("");
-
-      insertChat("robot", "I didn't understand", 500);
-    }
+$("#woIs").click(() => {
+  insertChat("me", "Who is Bassel Kassem?");
+  for (let i = 0; i < answers["whoIs"].length; i++) {
+    insertChat("robot", answers["whoIs"][i], (i + 1) * 500);
   }
 });
-$(".msg_send_btn").click(function () {
-  $(".write_msg").trigger({ type: "keydown", which: 13, keyCode: 13 });
-});
-
-$("#woIs").click(function () {
-  insertChat("me", 'Who is Bassel Kassem?');
-  for (let i = 0; i <  answers['whoIs'].length; i++) {
-    insertChat("robot", answers['whoIs'][i], (i+1) * 500); 
-  }
-});
-$("#workExp").click(function () {
+$("#workExp").click(() => {
   insertChat("me", "Tell me about Bassel's work experience?");
-  for (let i = 0; i <  answers['workExp'].length; i++) {
-    insertChat("robot", answers['workExp'][i], (i+1) * 500);
+  for (let i = 0; i < answers["workExp"].length; i++) {
+    insertChat("robot", answers["workExp"][i], (i + 1) * 500);
   }
 });
-$("#education").click(function () {
+$("#education").click(() => {
   insertChat("me", "Tell me about Bassel's education?");
-  for (let i = 0; i <  answers['education'].length; i++) {
-    insertChat("robot", answers['education'][i], (i+1) * 500);
+  for (let i = 0; i < answers["education"].length; i++) {
+    insertChat("robot", answers["education"][i], (i + 1) * 500);
   }
 });
-$("#skills").click(function () {
+$("#skills").click(() => {
   insertChat("me", "What are Bassel's skills?");
-  for (let i = 0; i <  answers['skills'].length; i++) {
-    insertChat("robot", answers['skills'][i], (i+1) * 500);
+  for (let i = 0; i < answers["skills"].length; i++) {
+    insertChat("robot", answers["skills"][i], (i + 1) * 500);
   }
 });
-$("#projects").click(function () {
+$("#projects").click(() => {
   insertChat("me", "Tell me a little bit about Bassel's projects!");
-  for (let i = 0; i < answers['projects'].length; i++) {
-    insertChat("robot", answers['projects'][i], (i+ 1) *500);
+  for (let i = 0; i < answers["projects"].length; i++) {
+    insertChat("robot", answers["projects"][i], (i + 1) * 500);
   }
 });
 
 resetChat();
 insertChat("robot", "Hi, how are you doning!", 10);
+
+$(document).ready(async () => {
+
+  var model = await qna.load();
+
+  $(".write_msg").on("keydown", function (e) {
+    if (e.which == 13) {
+      var text = $(this).val();
+      if (text !== "") {
+        insertChat("me", text);
+        $(this).val("");
+        model.findAnswers(text, passage).then((answers) => {
+          if(answers.length > 0) {
+            insertChat("robot", answers[0].text, 0);
+          } else {
+            insertChat("robot", "No answer!", 500);
+          }
+        });
+      }
+    }
+  });
+  $(".msg_send_btn").click(function () {
+    $(".write_msg").trigger({ type: "keydown", which: 13, keyCode: 13 });
+  });
+});
