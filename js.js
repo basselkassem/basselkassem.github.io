@@ -1,3 +1,36 @@
+var answers = {
+  "whoIs": [
+    "Bassel is a machine learning engineer passionate about applying math in real-world problems.",
+    "He also likes to read books and play chess in his free time.",
+  ],
+  "workExp":[
+    "Bassel has +4 years of professional experience in software development.",
+    "He worked as software developer, web developer and assistant teacher.",
+    "To have a closer look at his work experience, please have a look at his "+
+    "<a target = '_blank', href ='https://www.linkedin.com/in/bassel-sh-k/'> Linkedin account</a>",
+  ],
+  "education": [
+    "Bassel studied information systems engineering in HIAST(Syria).",
+    "He was busy for the last 3 years learning about AI and machine learning.",
+    "To have a closer look at his education, please have a look at his "+
+    "<a target = '_blank', href ='https://www.linkedin.com/in/bassel-sh-k/'> Linkedin account</a>",
+  ],
+  "skills": [
+    "Bassel is very skilled in software engineering and machine learning.",
+    "He has a good experience in python, tensorflow and data science tools.",
+    "He can also cook teasty food.",
+    "To have a closer look at his skills, please have a look at his "+
+    "<a target = '_blank', href ='https://www.linkedin.com/in/bassel-sh-k/'> Linkedin account</a>",
+ 
+  ],
+  "projects": [
+    "Bassel demonstrated his skills through delivering many machine learning projects.",
+    "He worked on many case studies from computer vision and NLP.",
+    "To have a closer look at his work, have a look at his "+
+    "<a target = '_blank', href ='https://github.com/basselkassem/'> Github account</a>",
+  ],
+};
+
 function formatAMPM(date) {
   var hours = date.getHours();
   var minutes = date.getMinutes();
@@ -11,7 +44,7 @@ function formatAMPM(date) {
 function getRobotMsg(text, date){
     return  '<div class="incoming_msg">' +
     '<div class="incoming_msg_img">' +
-    '<img src="https://cdn0.iconfinder.com/data/icons/streamline-emoji-1/48/094-robot-face-3-512.png" alt="robot">' +
+    '<img src="imgs/robot.webp" alt="robot">' +
     "</div>" +
     '<div class="received_msg">' +
     '<div class="received_withd_msg">' +
@@ -37,7 +70,6 @@ function getUserMsg(text, date) {
     "</div>" +
     "</div>";
 }
-
 function insertChat(who, text, time) {
   if (time === undefined) {
     time = 0;
@@ -53,11 +85,10 @@ function insertChat(who, text, time) {
   setTimeout(function () {
     $(".msg_history").append(control);
     $('.msg_history ').animate({
-        scrollTop: $('.msg_history p:last').offset().top
-    });
+        scrollTop: $('.msg_history').prop("scrollHeight")
+    }, 500);
   }, time);
 }
-
 function resetChat() {
   $(".msg_history").empty();
 }
@@ -73,13 +104,40 @@ $(".write_msg").on("keydown", function (e) {
     }
   }
 });
-
 $(".msg_send_btn").click(function () {
   $(".write_msg").trigger({ type: "keydown", which: 13, keyCode: 13 });
 });
 
-//-- Clear Chat
-resetChat();
+$("#woIs").click(function () {
+  insertChat("me", 'Who is Bassel Kassem?');
+  for (let i = 0; i <  answers['whoIs'].length; i++) {
+    insertChat("robot", answers['whoIs'][i], (i+1) * 500); 
+  }
+});
+$("#workExp").click(function () {
+  insertChat("me", "Tell me about Bassel's work experience?");
+  for (let i = 0; i <  answers['workExp'].length; i++) {
+    insertChat("robot", answers['workExp'][i], (i+1) * 500);
+  }
+});
+$("#education").click(function () {
+  insertChat("me", "Tell me about Bassel's education?");
+  for (let i = 0; i <  answers['education'].length; i++) {
+    insertChat("robot", answers['education'][i], (i+1) * 500);
+  }
+});
+$("#skills").click(function () {
+  insertChat("me", "What are Bassel's skills?");
+  for (let i = 0; i <  answers['skills'].length; i++) {
+    insertChat("robot", answers['skills'][i], (i+1) * 500);
+  }
+});
+$("#projects").click(function () {
+  insertChat("me", "Tell me a little bit about Bassel's projects!");
+  for (let i = 0; i < answers['projects'].length; i++) {
+    insertChat("robot", answers['projects'][i], (i+ 1) *500);
+  }
+});
 
-//-- Print Messages
-insertChat("robot", "Hi, let's talk!", 10);
+resetChat();
+insertChat("robot", "Hi, how are you doning!", 10);

@@ -8,43 +8,45 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+    crossorigin="anonymous" />
   <link href="style.css" type="text/css" rel="stylesheet">
 </head>
 
 <body>
   <div class="container">
-    <div class="messaging">
-      <div class="inbox_msg">
-        <div class="inbox_people">
-          <div class="inbox_chat">
-            <div class="chat_list active_chat">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="imgs/me.jpg" alt="me"> </div>
-                <div class="chat_ib">
-                  <h2>Bassel Kassem</h2>
-                  <p>Machine Learning Engineer</p>
-                  <a href = "https://www.linkedin.com/in/bassel-sh-k/", target="_blank">
-                    <i class="fab fa-linkedin-in"></i>
-                  </a>
-                  <a href = "https://github.com/basselkassem", target="_blank">
-                    <i class="fab fa-github"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
+    <div class="app">
+      <div class="meIntro">
+        <div class="meHeader">
+          <div class="chat_img"> <img src="imgs/me.jpg" alt="me"> </div>
+          <div class="chat_ib">
+            <h2>Bassel Kassem</h2>
+            <p>Machine Learning Engineer</p>
+            <a href="https://www.linkedin.com/in/bassel-sh-k/" , target="_blank">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://github.com/basselkassem" , target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
           </div>
         </div>
-        
-        <div class="mesgs">
-          <div class="msg_history">
+        <div class="meQuestions">
+          <p class="btnQ" id="woIs">About Me</p>
+          <p class="btnQ" id="workExp">Work Experience</p>
+          <p class="btnQ" id="education">Education</p>
+          <p class="btnQ" id="skills">Skills</p>
+          <p class="btnQ" id="projects">Projects</p>
+        </div>
+      </div>
 
-          </div>
-          <div class="type_msg">
-            <div class="input_msg_write">
-              <input type="text" class="write_msg" placeholder="Type a message" />
-              <button class="msg_send_btn" type="button"><i class="fas fa-paper-plane"></i></button>
-            </div>
+      <div class="msgs">
+        <div class="msg_history">
+        </div>
+        <div class="type_msg">
+          <div class="input_msg_write">
+            <input type="text" class="write_msg" placeholder="Type a message" />
+            <button class="msg_send_btn" type="button"><i class="fas fa-paper-plane"></i></button>
           </div>
         </div>
       </div>
