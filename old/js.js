@@ -29,8 +29,6 @@ var answers = {
       "<a target = '_blank', href ='https://github.com/basselkassem/'> Github account</a>",
   ],
 };
-var passage = Object.values(answers);
-passage = passage.reduce((res, elem) => res + " " + elem);
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -135,27 +133,6 @@ $("#projects").click(() => {
 resetChat();
 insertChat("robot", "Hi, how are you doning!", 10);
 
-$(document).ready(async () => {
+$(document).ready(() => {
 
-  var model = await qna.load();
-
-  $(".write_msg").on("keydown", function (e) {
-    if (e.which == 13) {
-      var text = $(this).val();
-      if (text !== "") {
-        insertChat("me", text);
-        $(this).val("");
-        model.findAnswers(text, passage).then((answers) => {
-          if(answers.length > 0) {
-            insertChat("robot", answers[0].text, 0);
-          } else {
-            insertChat("robot", "No answer!", 500);
-          }
-        });
-      }
-    }
-  });
-  $(".msg_send_btn").click(function () {
-    $(".write_msg").trigger({ type: "keydown", which: 13, keyCode: 13 });
-  });
 });
