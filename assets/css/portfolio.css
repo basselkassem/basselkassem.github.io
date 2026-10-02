@@ -77,6 +77,13 @@ a:focus-visible {
 	width: 12px;
 	height: 22px;
 	background: var(--accent);
+	animation: cursor-blink 1s steps(2, start) infinite;
+}
+
+@keyframes cursor-blink {
+	to {
+		visibility: hidden;
+	}
 }
 
 .masthead-note,
@@ -101,12 +108,39 @@ a:focus-visible {
 .accent,
 .nav-index,
 .text-link,
-.social-links span {
+.external-icon {
 	color: var(--accent);
 }
 
 .social-links {
 	gap: 22px;
+}
+
+.social-links a {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+}
+
+.social-links a span {
+	color: inherit;
+}
+
+.icon {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	flex: 0 0 auto;
+}
+
+.social-icon {
+	width: 15px;
+	height: 15px;
+}
+
+.external-icon {
+	width: 11px;
+	height: 11px;
 }
 
 .social-links a,
@@ -206,6 +240,39 @@ h1 {
 	padding: 20px 0 3px 24px;
 	border-left: 1px solid var(--line);
 	color: #b1b1ad;
+}
+
+.hero-illustration {
+	margin: 0 0 24px;
+	border: 1px solid var(--line);
+	background: #0b0b0b;
+}
+
+.hero-illustration img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.hero-illustration figcaption {
+	display: flex;
+	align-items: center;
+	padding: 8px 10px;
+	border-top: 1px solid var(--line);
+	color: var(--muted);
+	font-size: 8px;
+	letter-spacing: 0.06em;
+	white-space: nowrap;
+}
+
+.hero-illustration figcaption .status-dot {
+	width: 5px;
+	height: 5px;
+	margin-right: 7px;
+}
+
+.hero-illustration figcaption > span:last-child {
+	margin-left: 5px;
 }
 
 .hero-aside .eyebrow {
@@ -673,6 +740,10 @@ h2 {
 		max-width: none;
 	}
 
+	.hero-illustration {
+		max-width: 420px;
+	}
+
 	.content-grid {
 		grid-template-columns: 1fr;
 		gap: 12px;
@@ -778,5 +849,9 @@ h2 {
 
 	* {
 		transition-duration: 0.01ms !important;
+	}
+
+	.wordmark-mark {
+		animation: none;
 	}
 }

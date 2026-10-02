@@ -10,6 +10,7 @@ layout: null
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="theme-color" content="#080808" />
 		<meta name="description" content="{{ portfolio.profile.description | escape }}" />
+		<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg" />
 		<link rel="stylesheet" href="assets/css/portfolio.css" />
 		<script src="assets/js/portfolio.js" defer></script>
 	</head>
@@ -24,7 +25,11 @@ layout: null
 				<p class="masthead-note">PERSONAL SITE <span>·</span> {{ portfolio.profile.title | upcase | escape }}</p>
 				<div class="social-links" aria-label="Social links">
 					{% for social in portfolio.profile.social %}
-						<a href="{{ social.url | escape }}">{{ social.label | upcase | escape }} <span aria-hidden="true">↗</span></a>
+						<a href="{{ social.url | escape }}" aria-label="{{ social.label | escape }}" rel="me">
+							<svg class="icon social-icon" aria-hidden="true"><use href="assets/images/icons.svg#{{ social.icon | escape }}"></use></svg>
+							<span>{{ social.label | upcase | escape }}</span>
+							<svg class="icon external-icon" aria-hidden="true"><use href="assets/images/icons.svg#external"></use></svg>
+						</a>
 					{% endfor %}
 				</div>
 			</header>
@@ -51,6 +56,10 @@ layout: null
 						</div>
 					</div>
 					<aside class="hero-aside">
+						<figure class="hero-illustration">
+							<img src="assets/images/neural-network.svg" alt="" width="640" height="300" />
+							<figcaption><span class="status-dot" aria-hidden="true"></span> AI SYSTEMS <span>·</span> FROM DATA TO DEPLOYMENT</figcaption>
+						</figure>
 						<p class="eyebrow">ABOUT ME</p>
 						{% for paragraph in portfolio.profile.about %}
 							<p>{{ paragraph | escape }}</p>

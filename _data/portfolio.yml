@@ -5,15 +5,17 @@ profile:
   role: "MLOps Engineer · AI & Data Leader"
   description: "Bassel Alsheek-Kassem is an MLOps engineer and machine learning leader based in Munich, Germany."
   summary: "Turning machine learning and data into dependable, real-world products."
-  location: "Munich, Germany"
+  location: "Germany"
   about:
     - "I am an MLOps engineer passionate about applying mathematics and machine learning to real-world problems."
     - "My work spans AI delivery, production ML platforms, computer vision, and software engineering."
     - "Outside of work, I enjoy reading and playing chess."
   social:
     - label: "GitHub"
+      icon: "github"
       url: "https://github.com/basselkassem"
     - label: "LinkedIn"
+      icon: "linkedin"
       url: "https://www.linkedin.com/in/bassel-sh-k/"
   linkedin: "https://www.linkedin.com/in/bassel-sh-k/"
   footer: "BASSEL ALSHEEK-KASSEM"
