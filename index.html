@@ -1,75 +1,192 @@
-<!DOCTYPE HTML>
-<html>
+---
+layout: null
+---
+{% assign portfolio = site.data.portfolio %}
+<!DOCTYPE html>
+<html lang="en">
 	<head>
-		<title>Bassel Kassem</title>
+		<title>{{ portfolio.profile.name | escape }} — {{ portfolio.profile.title | escape }}</title>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#080808" />
+		<meta name="description" content="{{ portfolio.profile.description | escape }}" />
+		<link rel="stylesheet" href="assets/css/portfolio.css" />
+		<script src="assets/js/portfolio.js" defer></script>
 	</head>
-	<body class="is-preload">
+	<body>
+		<div class="reading-progress" aria-hidden="true"><span id="reading-progress"></span></div>
+		<div class="site-shell">
+			<header class="masthead">
+				<a class="wordmark" href="#top" aria-label="{{ portfolio.profile.name | escape }} home">
+					<span class="wordmark-mark" aria-hidden="true"></span>
+					<span>{{ portfolio.profile.display_name | escape }}</span>
+				</a>
+				<p class="masthead-note">PERSONAL SITE <span>·</span> {{ portfolio.profile.title | upcase | escape }}</p>
+				<div class="social-links" aria-label="Social links">
+					{% for social in portfolio.profile.social %}
+						<a href="{{ social.url | escape }}">{{ social.label | upcase | escape }} <span aria-hidden="true">↗</span></a>
+					{% endfor %}
+				</div>
+			</header>
 
-		<!-- Wrapper -->
-			<div id="wrapper">
-
-				<!-- Header -->
-					<header id="header">
-						<div class="content">
-							<div class="inner">
-								<h1>Bassel Kassem</h1>
-								<p>Machine Learning Engineer</p>
-								<ul class="icons">
-									<li><a href="https://www.linkedin.com/in/bassel-sh-k/" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
-									<li><a href="https://github.com/basselkassem" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-								</ul>
-							</div>
-						</div>
-						<nav>
-							<ul>
-								<li><a href="#intro">Intro</a></li>
-								<li><a href="#work">Work</a></li>
-								<li><a href="#skills">Skills</a></li>
-							</ul>
-						</nav>
-					</header>
-
-				<!-- Main -->
-					<div id="main">
-
-						<!-- Intro -->
-							<article id="intro">
-								<h2 class="major">Intro</h2>
-								<p>I am a machine learning engineer passionate about applying math in real-world problems.</p>
-								<p>I like to read books and play chess in my free time.</p>
-							</article>
-
-						<!-- Work -->
-							<article id="work">
-								<h2 class="major">Work</h2>
-								<p>I have +4 years of professional experience in software development.</p>
-								<p>I worked as software developer, web developer and assistant teacher. Please have a look at my <a href ='https://www.linkedin.com/in/bassel-sh-k/'>Linkedin account</a>.</p>
-							</article>
-
-						<!-- Skills -->
-							<article id="skills">
-								<h2 class="major">Skills</h2>
-								<p>Software engineering, machine learning and data science are the core of my skill set.</p>
-								<p>I have a good experience in python, tensorflow, matplotlib and sklearn. Please have a look at my <a href ='https://www.linkedin.com/in/bassel-sh-k/'>Linkedin account</a>.</p>
-							</article>
-
-					</div>
-
+			<div class="section-bar">
+				<nav class="primary-nav" aria-label="Main navigation">
+					{% for item in portfolio.navigation %}
+						<a href="#{{ item.id | escape }}"><span class="nav-index">{{ forloop.index | prepend: '0' | escape }}</span> {{ item.label | escape }}</a>
+					{% endfor %}
+				</nav>
+				<p class="availability"><span class="status-dot" aria-hidden="true"></span> {{ portfolio.profile.location | upcase | escape }}</p>
 			</div>
 
-		<!-- BG -->
-			<div id="bg"></div>
+			<main id="top">
+				<section class="hero" id="intro" aria-labelledby="page-title">
+					<div class="hero-copy">
+						<p class="eyebrow"><span class="eyebrow-mark">/</span> PROFILE <span class="eyebrow-muted">001</span></p>
+						<h1 id="page-title">{{ portfolio.profile.name | escape | replace: ' ', '<br />' }}<span class="accent">.</span></h1>
+						<p class="hero-role">{{ portfolio.profile.role | escape }}</p>
+						<p class="hero-summary">{{ portfolio.profile.summary | escape }}</p>
+						<div class="hero-actions">
+							<a class="button-link" href="#experience">EXPLORE EXPERIENCE <span aria-hidden="true">↓</span></a>
+							<a class="text-link" href="{{ portfolio.profile.linkedin | escape }}">LINKEDIN <span aria-hidden="true">↗</span></a>
+						</div>
+					</div>
+					<aside class="hero-aside">
+						<p class="eyebrow">ABOUT ME</p>
+						{% for paragraph in portfolio.profile.about %}
+							<p>{{ paragraph | escape }}</p>
+						{% endfor %}
+					</aside>
+				</section>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+				<section class="section-block" id="experience" aria-labelledby="experience-title">
+					<div class="section-heading">
+						<div>
+							<p class="eyebrow">{{ portfolio.experience.eyebrow | escape }} <span class="eyebrow-muted">/ 01</span></p>
+							<h2 id="experience-title">{{ portfolio.experience.heading | escape }}</h2>
+						</div>
+						<p class="section-note">{{ portfolio.experience.note | escape }}</p>
+					</div>
 
+					<div class="timeline">
+						{% for role in portfolio.experience.roles %}
+							<article class="timeline-entry">
+								<div class="timeline-date">{{ role.dates | escape }}</div>
+								<div class="timeline-content">
+									<div class="entry-heading">
+										<div>
+											<p class="entry-company">{{ role.company | escape }} <span>· {{ role.employment | escape }} · {{ role.location | escape }}</span></p>
+											<h3>{{ role.title | escape }}</h3>
+										</div>
+										<span class="entry-number">{{ forloop.index | prepend: '0' | escape }}</span>
+									</div>
+									<details class="entry-details">
+										<summary>Role details <span class="disclosure-icon" aria-hidden="true">+</span></summary>
+										<div class="details-body">
+											<ul>
+												{% for bullet in role.bullets %}
+													<li>{{ bullet | escape }}</li>
+												{% endfor %}
+											</ul>
+											<div class="tag-list">
+												{% for tag in role.tags %}
+													<span>{{ tag | escape }}</span>
+												{% endfor %}
+											</div>
+										</div>
+									</details>
+								</div>
+							</article>
+						{% endfor %}
+					</div>
+				</section>
+
+				<section class="section-block" id="skills" aria-labelledby="skills-title">
+					<div class="section-heading">
+						<div>
+							<p class="eyebrow">{{ portfolio.skills.eyebrow | escape }} <span class="eyebrow-muted">/ 02</span></p>
+							<h2 id="skills-title">{{ portfolio.skills.heading | escape }}</h2>
+						</div>
+						<p class="section-note">{{ portfolio.skills.note | escape }}</p>
+					</div>
+					<div class="filter-controls skill-filters" aria-label="Filter skills">
+						<button type="button" data-filter="all" aria-pressed="true">ALL</button>
+						{% for category in portfolio.skills.categories %}
+							<button type="button" data-filter="{{ category.id | escape }}" aria-pressed="false">{{ category.label | escape }}</button>
+						{% endfor %}
+					</div>
+					<div class="skill-list skill-catalog" aria-live="polite">
+						{% for category in portfolio.skills.categories %}
+							{% for skill in category.items %}
+								<span class="filterable" data-category="{{ category.id | escape }}">{{ skill | escape }}</span>
+							{% endfor %}
+						{% endfor %}
+					</div>
+				</section>
+
+				<section class="section-block" id="projects" aria-labelledby="projects-title">
+					<div class="section-heading">
+						<div>
+							<p class="eyebrow">{{ portfolio.projects.eyebrow | escape }} <span class="eyebrow-muted">/ 03</span></p>
+							<h2 id="projects-title">{{ portfolio.projects.heading | escape }}</h2>
+						</div>
+						<p class="section-note">{{ portfolio.projects.note | escape }}</p>
+					</div>
+					<div class="filter-controls project-filters" aria-label="Filter projects">
+						<button type="button" data-filter="all" aria-pressed="true">ALL PROJECTS</button>
+						{% for category in portfolio.projects.categories %}
+							<button type="button" data-filter="{{ category.id | escape }}" aria-pressed="false">{{ category.label | escape }}</button>
+						{% endfor %}
+					</div>
+					<div class="project-grid">
+						{% for project in portfolio.projects.items %}
+							<article class="project-card filterable" data-category="{{ project.category | escape }}">
+								<p class="project-meta">{{ project.meta | escape }}</p>
+								<h3>{{ project.title | escape }}</h3>
+								<p>{{ project.description | escape }}</p>
+							</article>
+						{% endfor %}
+					</div>
+				</section>
+
+				<div class="two-column-sections">
+					<section class="section-block compact-section" id="education" aria-labelledby="education-title">
+						<div class="section-heading">
+							<div>
+								<p class="eyebrow">{{ portfolio.education.eyebrow | escape }} <span class="eyebrow-muted">/ 04</span></p>
+								<h2 id="education-title">{{ portfolio.education.heading | escape }}</h2>
+							</div>
+						</div>
+						{% for item in portfolio.education.items %}
+							<article class="education-card">
+								<p class="project-meta">{{ item.dates | escape }}</p>
+								<h3>{{ item.institution | escape }}</h3>
+								<p>{{ item.qualification | escape }}</p>
+								<p class="muted-copy">{{ item.details | escape }}</p>
+							</article>
+						{% endfor %}
+					</section>
+
+					<section class="section-block compact-section" id="certifications" aria-labelledby="certifications-title">
+						<div class="section-heading">
+							<div>
+								<p class="eyebrow">{{ portfolio.certifications.eyebrow | escape }} <span class="eyebrow-muted">/ 05</span></p>
+								<h2 id="certifications-title">{{ portfolio.certifications.heading | escape }}</h2>
+							</div>
+						</div>
+						<ul class="cert-list">
+							{% for certification in portfolio.certifications.items %}
+								<li><span>{{ certification.name | escape }}</span><span>{{ certification.issuer | escape }}</span></li>
+							{% endfor %}
+						</ul>
+					</section>
+				</div>
+
+				<footer class="page-footer">
+					<p>© <span id="current-year"></span> {{ portfolio.profile.footer | escape }}</p>
+					<a href="#top">BACK TO TOP ↑</a>
+					<p>{{ portfolio.profile.footer_note | escape }} <span class="accent">✳</span></p>
+				</footer>
+			</main>
+		</div>
 	</body>
 </html>
