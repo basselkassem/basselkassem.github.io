@@ -53,12 +53,28 @@ layout: null
 						<div class="hero-actions">
 							<a class="button-link" href="#experience">EXPLORE EXPERIENCE <span aria-hidden="true">↓</span></a>
 							<a class="text-link" href="{{ portfolio.profile.linkedin | escape }}">LINKEDIN <span aria-hidden="true">↗</span></a>
+							<a class="text-link" href="{{ portfolio.profile.github | escape }}">GITHUB <span aria-hidden="true">↗</span></a>
 						</div>
 					</div>
 					<aside class="hero-aside">
 						<figure class="hero-illustration">
-							<img src="assets/images/neural-network.svg" alt="" width="640" height="300" />
-							<figcaption><span class="status-dot" aria-hidden="true"></span> AI SYSTEMS <span>·</span> FROM DATA TO DEPLOYMENT</figcaption>
+							<div class="portfolio-map" data-portfolio-map data-groups='{{ portfolio.map.groups | jsonify | escape }}'>
+								<canvas class="lrn-map3-canvas" tabindex="0" role="application" aria-label="Interactive network of skills, experience, projects, and education. Use arrow keys to explore nodes and Enter to open a section." aria-describedby="map-help"></canvas>
+								<div class="map-tooltip" data-map-tooltip aria-live="polite">
+									<p class="map-tooltip-title" data-map-title>PORTFOLIO MAP</p>
+									<p class="map-tooltip-copy" data-map-copy>Select a building to explore a different part of my work.</p>
+									<a class="map-tooltip-link" data-map-link hidden></a>
+								</div>
+							</div>
+							<div class="map-legend" aria-label="Portfolio network categories">
+								{% for group in portfolio.map.groups %}
+									<button type="button" class="map-legend-button" data-map-group="{{ group.id | escape }}" aria-label="Highlight {{ group.title | downcase | escape }} nodes">
+										<span class="map-legend-dot" style="--node-color: {{ group.color | escape }}" aria-hidden="true"></span>
+										{{ group.title | escape }}
+									</button>
+								{% endfor %}
+							</div>
+							<figcaption id="map-help"><span class="status-dot" aria-hidden="true"></span> {{ portfolio.map.hint | escape }}</figcaption>
 						</figure>
 						<p class="eyebrow">ABOUT ME</p>
 						{% for paragraph in portfolio.profile.about %}
@@ -89,7 +105,11 @@ layout: null
 										<span class="entry-number">{{ forloop.index | prepend: '0' | escape }}</span>
 									</div>
 									<details class="entry-details">
-										<summary>Role details <span class="disclosure-icon" aria-hidden="true">+</span></summary>
+										<summary>
+											<span>Role details</span>
+											<span class="disclosure-hint">CLICK TO EXPAND</span>
+											<span class="disclosure-icon" aria-hidden="true"></span>
+										</summary>
 										<div class="details-body">
 											<ul>
 												{% for bullet in role.bullets %}

@@ -18,6 +18,7 @@ profile:
       icon: "linkedin"
       url: "https://www.linkedin.com/in/bassel-sh-k/"
   linkedin: "https://www.linkedin.com/in/bassel-sh-k/"
+  github: "https://github.com/basselkassem"
   footer: "BASSEL ALSHEEK-KASSEM"
   footer_note: "MADE WITH CURIOSITY"
 
@@ -30,6 +31,30 @@ navigation:
     label: "SKILLS"
   - id: "projects"
     label: "PROJECTS"
+
+map:
+  hint: "HOVER OR SELECT A NODE TO EXPLORE"
+  groups:
+    - id: "experience"
+      title: "EXPERIENCE"
+      summary: "Eight roles across AI delivery, production machine learning, computer vision, software development, and teaching."
+      target: "experience"
+      color: "#e8f51b"
+    - id: "skills"
+      title: "SKILLS"
+      summary: "Explore my MLOps, machine learning, software, data, and NLP tools."
+      target: "skills"
+      color: "#45d6b0"
+    - id: "projects"
+      title: "PROJECTS"
+      summary: "Selected work spanning particle physics, forecasting, reinforcement learning, NLP, and software."
+      target: "projects"
+      color: "#8da7ff"
+    - id: "education"
+      title: "EDUCATION"
+      summary: "Information systems engineering and data center technology studies."
+      target: "education"
+      color: "#d795f5"
 
 experience:
   heading: "Experience"
@@ -161,6 +186,18 @@ skills:
   eyebrow: "CAPABILITIES"
   note: "SELECT A TOPIC TO FILTER"
   categories:
+    - id: "GenAI"
+      label: "GENERATIVE AI"
+      items:
+        - "MCP"
+        - "Agentic AI"
+        - "RAG"
+        - "Multimodale"
+        - "Prompt Engineering"
+        - "LLamaindex"
+        - "Langchain"
+        - "Copilot"
+  
     - id: "mlops"
       label: "MLOPS & CLOUD"
       items:
@@ -172,6 +209,7 @@ skills:
         - "TERRAFORM"
         - "JENKINS"
         - "GCP"
+        - "vLLM"
     - id: "machine-learning"
       label: "MACHINE LEARNING"
       items:
@@ -181,6 +219,7 @@ skills:
         - "COMPUTER VISION"
         - "GENERATIVE AI"
         - "REINFORCEMENT LEARNING"
+        - "NLP"
     - id: "software"
       label: "SOFTWARE"
       items:
