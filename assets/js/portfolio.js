@@ -33,10 +33,10 @@
 		const link = map.querySelector("[data-map-link]");
 		const groupButtons = [...figure.querySelectorAll("[data-map-group]")];
 		const groupLayout = [
-			{ x: 0.25, y: 0.29, section: "experience" },
-			{ x: 0.75, y: 0.29, section: "skills" },
-			{ x: 0.25, y: 0.76, section: "projects" },
-			{ x: 0.75, y: 0.76, section: "education" }
+			{ x: 0.25, y: 0.29 },
+			{ x: 0.75, y: 0.29 },
+			{ x: 0.25, y: 0.76},
+			{ x: 0.75, y: 0.76 }
 		];
 		const groupNodes = groups.map((group, index) => ({
 			...group,
@@ -46,6 +46,11 @@
 		let nodes = [];
 		let activeNode = null;
 		let pinned = false;
+		const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+		let canvasIsVisible = true;
+		let animationFrame = 0;
+		let lastFrame = 0;
+		const animationStart = performance.now();
 
 		const textOf = (element, selector) => element.querySelector(selector)?.textContent.trim() ?? "";
 		const makeNode = (groupId, section, label, summary, element) => ({
@@ -55,7 +60,15 @@
 			summary,
 			element,
 			x: 0,
-			y: 0
+			y: 0,
+			motion: {
+				phaseX: Math.random() * Math.PI * 2,
+				phaseY: Math.random() * Math.PI * 2,
+				speedX: 0.5 + Math.random() * 0.1,
+				speedY: 0.5 + Math.random() * 0.1,
+				amplitudeX: 20 + Math.random() * 2.5,
+				amplitudeY: 30 + Math.random() * 2
+			}
 		});
 
 		const experienceNodes = [...document.querySelectorAll(".timeline-entry")].map((entry) => makeNode(
@@ -86,7 +99,14 @@
 			`${textOf(education, ".project-meta")}. ${textOf(education, "p:not(.project-meta)")}`,
 			education
 		));
-		nodes = [...experienceNodes, ...skillNodes, ...projectNodes, ...educationNodes];
+		const certificationNodes = [...document.querySelectorAll(".cert-list li")].map((certification) => makeNode(
+			"education",
+			"certifications",
+			textOf(certification, "span:first-child"),
+			`${textOf(certification, "span:last-child")}. Professional certification.`,
+			certification
+		));
+		nodes = [...experienceNodes, ...skillNodes, ...projectNodes, ...educationNodes, ...certificationNodes];
 
 		groupNodes.forEach((group) => {
 			group.nodes = nodes.filter((node) => node.groupId === group.id);
@@ -112,7 +132,7 @@
 				link.hidden = false;
 			} else {
 				title.textContent = "PORTFOLIO NETWORK";
-				copy.textContent = `${nodes.length} connected nodes · skills, experience, projects, education`;
+				copy.textContent = `${nodes.length} connected nodes · skills, experience, projects, education & certificates`;
 				link.hidden = true;
 			}
 			drawNetwork();
@@ -121,8 +141,8 @@
 		const layoutNodes = (width, height) => {
 			const marginX = Math.min(14, width * 0.06);
 			const marginY = 12;
-			const clusterWidth = (width - marginX * 2) * 0.46;
-			const clusterHeight = (height - marginY * 2) * 0.43;
+			const clusterWidth = (width - marginX * 2) * 0.35;
+			const clusterHeight = (height - marginY * 2) * 0.29;
 
 			groupNodes.forEach((group) => {
 				const count = group.nodes.length;
@@ -141,8 +161,8 @@
 					const rowCount = Math.min(columns, count - row * columns);
 					const rowOffset = (columns - rowCount) * stepX / 2;
 					const jitter = ((index * 13) % 7 - 3) * 1.5;
-					node.x = left + rowOffset + col * stepX + jitter;
-					node.y = top + row * stepY + ((index * 7) % 5 - 2) * 1.2;
+					node.baseX = left + rowOffset + col * stepX + jitter;
+					node.baseY = top + row * stepY + ((index * 7) % 5 - 2) * 1.2;
 					node.radius = node === activeNode ? 4 : 2.3;
 				});
 			});
@@ -159,6 +179,17 @@
 			context.setTransform(ratio, 0, 0, ratio, 0, 0);
 			context.clearRect(0, 0, bounds.width, bounds.height);
 			layoutNodes(bounds.width, bounds.height);
+
+			const elapsed = (performance.now() - animationStart) / 1000;
+			nodes.forEach((node) => {
+				const { motion } = node;
+				node.x = node.baseX
+					+ Math.sin(elapsed * motion.speedX + motion.phaseX) * motion.amplitudeX
+					+ Math.sin(elapsed * motion.speedX * 0.43 + motion.phaseY) * motion.amplitudeX * 0.3;
+				node.y = node.baseY
+					+ Math.sin(elapsed * motion.speedY + motion.phaseY) * motion.amplitudeY
+					+ Math.sin(elapsed * motion.speedY * 0.51 + motion.phaseX) * motion.amplitudeY * 0.3;
+			});
 
 			const groupById = (id) => groupNodes.find((group) => group.id === id);
 			context.lineWidth = 0.7;
@@ -313,8 +344,43 @@
 		link.addEventListener("click", () => {
 			pinned = false;
 		});
+
+		const stopAnimation = () => {
+			if (animationFrame) {
+				cancelAnimationFrame(animationFrame);
+				animationFrame = 0;
+			}
+		};
+		const animate = (timestamp) => {
+			if (!canvasIsVisible || document.hidden || motionPreference.matches) {
+				animationFrame = 0;
+				return;
+			}
+			if (timestamp - lastFrame >= 33) {
+				drawNetwork();
+				lastFrame = timestamp;
+			}
+			animationFrame = requestAnimationFrame(animate);
+		};
+		const syncAnimation = () => {
+			stopAnimation();
+			if (canvasIsVisible && !document.hidden && !motionPreference.matches) {
+				animationFrame = requestAnimationFrame(animate);
+			}
+		};
+		const visibilityObserver = "IntersectionObserver" in window
+			? new IntersectionObserver(([entry]) => {
+				canvasIsVisible = entry.isIntersecting;
+				syncAnimation();
+			}, { threshold: 0.05 })
+			: null;
+
+		visibilityObserver?.observe(canvas);
+		document.addEventListener("visibilitychange", syncAnimation);
+		motionPreference.addEventListener("change", syncAnimation);
 		window.addEventListener("resize", drawNetwork);
 		drawNetwork();
+		syncAnimation();
 
 		function groupById(id) {
 			return groupNodes.find((group) => group.id === id);

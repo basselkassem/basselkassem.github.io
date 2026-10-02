@@ -52,7 +52,7 @@ map:
       color: "#8da7ff"
     - id: "education"
       title: "EDUCATION"
-      summary: "Information systems engineering and data center technology studies."
+      summary: "Information systems engineering, data center studies, and professional certifications."
       target: "education"
       color: "#d795f5"
 
