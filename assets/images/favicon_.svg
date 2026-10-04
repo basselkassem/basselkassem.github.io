@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#030303"/>
+  <g transform="translate(256, 256)">
+    <!-- Quadrant 1 (Top) -->
+    <g transform="rotate(0)">
+      <polygon points="0,-170 -48,-122 -122,-122 -122,-48 -85,-85 0,-118" fill="#1CA152"/>
+      <polygon points="0,-170 48,-122 122,-122 122,-48 85,-85 0,-118" fill="#008529"/>
+    </g>
+
+    <!-- Quadrant 2 (Right) -->
+    <g transform="rotate(90)">
+      <polygon points="0,-170 -48,-122 -122,-122 -122,-48 -85,-85 0,-118" fill="#1CA152"/>
+      <polygon points="0,-170 48,-122 122,-122 122,-48 85,-85 0,-118" fill="#008529"/>
+    </g>
+
+    <!-- Quadrant 3 (Bottom) -->
+    <g transform="rotate(180)">
+      <polygon points="0,-170 -48,-122 -122,-122 -122,-48 -85,-85 0,-118" fill="#1CA152"/>
+      <polygon points="0,-170 48,-122 122,-122 122,-48 85,-85 0,-118" fill="#008529"/>
+    </g>
+
+    <!-- Quadrant 4 (Left) -->
+    <g transform="rotate(270)">
+      <polygon points="0,-170 -48,-122 -122,-122 -122,-48 -85,-85 0,-118" fill="#1CA152"/>
+      <polygon points="0,-170 48,-122 122,-122 122,-48 85,-85 0,-118" fill="#008529"/>
+    </g>
+  </g>
+</svg>

@@ -8,13 +8,14 @@ layout: null
 		<title>{{ portfolio.profile.name | escape }} — {{ portfolio.profile.title | escape }}</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="theme-color" content="#080808" />
+		<meta name="theme-color" content="#030303" />
 		<meta name="description" content="{{ portfolio.profile.description | escape }}" />
-		<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href="assets/images/favicon_.svg" />
 		<link rel="stylesheet" href="assets/css/portfolio.css" />
 		<script src="assets/js/portfolio.js" defer></script>
 	</head>
 	<body>
+		<a class="skip-link" href="#top">Skip to main content</a>
 		<div class="reading-progress" aria-hidden="true"><span id="reading-progress"></span></div>
 		<div class="site-shell">
 			<header class="masthead">
@@ -43,7 +44,7 @@ layout: null
 				<p class="availability"><span class="status-dot" aria-hidden="true"></span> {{ portfolio.profile.location | upcase | escape }}</p>
 			</div>
 
-			<main id="top">
+			<main id="top" tabindex="-1">
 				<section class="hero" id="intro" aria-labelledby="page-title">
 					<div class="hero-copy">
 						<p class="eyebrow"><span class="eyebrow-mark">/</span> PROFILE <span class="eyebrow-muted">001</span></p>
@@ -137,7 +138,7 @@ layout: null
 						</div>
 						<p class="section-note">{{ portfolio.skills.note | escape }}</p>
 					</div>
-					<div class="filter-controls skill-filters" aria-label="Filter skills">
+					<div class="filter-controls skill-filters" role="group" aria-label="Filter skills">
 						<button type="button" data-filter="all" aria-pressed="true">ALL</button>
 						{% for category in portfolio.skills.categories %}
 							<button type="button" data-filter="{{ category.id | escape }}" aria-pressed="false">{{ category.label | escape }}</button>
@@ -160,7 +161,7 @@ layout: null
 						</div>
 						<p class="section-note">{{ portfolio.projects.note | escape }}</p>
 					</div>
-					<div class="filter-controls project-filters" aria-label="Filter projects">
+					<div class="filter-controls project-filters" role="group" aria-label="Filter projects">
 						<button type="button" data-filter="all" aria-pressed="true">ALL PROJECTS</button>
 						{% for category in portfolio.projects.categories %}
 							<button type="button" data-filter="{{ category.id | escape }}" aria-pressed="false">{{ category.label | escape }}</button>
