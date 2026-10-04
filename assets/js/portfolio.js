@@ -41,6 +41,7 @@
 		const groupNodes = groups.map((group, index) => ({
 			...group,
 			...groupLayout[index % groupLayout.length],
+			baseDepth: (index - (groups.length - 1) / 2) * 0.16,
 			nodes: []
 		}));
 		let nodes = [];
@@ -67,7 +68,9 @@
 				speedX: 0.5 + Math.random() * 0.1,
 				speedY: 0.5 + Math.random() * 0.1,
 				amplitudeX: 20 + Math.random() * 2.5,
-				amplitudeY: 30 + Math.random() * 2
+				amplitudeY: 30 + Math.random() * 2,
+				phaseZ: Math.random() * Math.PI * 2,
+				speedZ: 0.25 + Math.random() * 0.12
 			}
 		});
 
@@ -163,6 +166,7 @@
 					const jitter = ((index * 13) % 7 - 3) * 1.5;
 					node.baseX = left + rowOffset + col * stepX + jitter;
 					node.baseY = top + row * stepY + ((index * 7) % 5 - 2) * 1.2;
+					node.baseZ = group.baseDepth + (((index * 7) % 11) / 10 - 0.5) * 0.18;
 					node.radius = node === activeNode ? 4 : 2.3;
 				});
 			});
@@ -180,31 +184,65 @@
 			context.clearRect(0, 0, bounds.width, bounds.height);
 			layoutNodes(bounds.width, bounds.height);
 
-			const elapsed = (performance.now() - animationStart) / 1000;
+			const elapsed = motionPreference.matches ? 0 : (performance.now() - animationStart) / 1000;
+			const angleY = elapsed * 0.16;
+			const angleX = Math.sin(elapsed * 0.22) * 0.16;
+			const cosY = Math.cos(angleY);
+			const sinY = Math.sin(angleY);
+			const cosX = Math.cos(angleX);
+			const sinX = Math.sin(angleX);
+			const focalLength = 2.8;
+			const projectPoint = (x, y, z) => {
+				const rotatedX = x * cosY + z * sinY;
+				const rotatedZ = -x * sinY + z * cosY;
+				const rotatedY = y * cosX - rotatedZ * sinX;
+				const depth = y * sinX + rotatedZ * cosX;
+				const perspective = focalLength / (focalLength - depth);
+				return {
+					x: bounds.width / 2 + rotatedX * bounds.width * 0.55 * perspective,
+					y: bounds.height / 2 + rotatedY * bounds.height * 0.55 * perspective,
+					depth,
+					perspective
+				};
+			};
+
 			nodes.forEach((node) => {
 				const { motion } = node;
-				node.x = node.baseX
+				const x = node.baseX
 					+ Math.sin(elapsed * motion.speedX + motion.phaseX) * motion.amplitudeX
 					+ Math.sin(elapsed * motion.speedX * 0.43 + motion.phaseY) * motion.amplitudeX * 0.3;
-				node.y = node.baseY
+				const y = node.baseY
 					+ Math.sin(elapsed * motion.speedY + motion.phaseY) * motion.amplitudeY
 					+ Math.sin(elapsed * motion.speedY * 0.51 + motion.phaseX) * motion.amplitudeY * 0.3;
+				const z = node.baseZ + Math.sin(elapsed * motion.speedZ + motion.phaseZ) * 0.045;
+				const projected = projectPoint((x / bounds.width - 0.5) * 2, (y / bounds.height - 0.5) * 2, z);
+				node.x = projected.x;
+				node.y = projected.y;
+				node.depth = projected.depth;
+				node.radius = (node === activeNode ? 4 : 2.3) * projected.perspective;
 			});
 
-			const groupById = (id) => groupNodes.find((group) => group.id === id);
+			groupNodes.forEach((group) => {
+				const projected = projectPoint((group.x - 0.5) * 2, (group.y - 0.5) * 2, group.baseDepth);
+				group.screenX = projected.x;
+				group.screenY = projected.y;
+				group.screenDepth = projected.depth;
+				group.perspective = projected.perspective;
+			});
+
 			context.lineWidth = 0.7;
 			context.strokeStyle = "#292929";
 			groupNodes.forEach((group, groupIndex) => {
 				const nextGroup = groupNodes[(groupIndex + 1) % groupNodes.length];
 				context.beginPath();
-				context.moveTo(group.x * bounds.width, group.y * bounds.height);
-				context.lineTo(nextGroup.x * bounds.width, nextGroup.y * bounds.height);
+				context.moveTo(group.screenX, group.screenY);
+				context.lineTo(nextGroup.screenX, nextGroup.screenY);
 				context.stroke();
 			});
 
 			groupNodes.forEach((group) => {
-				const centerX = group.x * bounds.width;
-				const centerY = group.y * bounds.height;
+				const centerX = group.screenX;
+				const centerY = group.screenY;
 				const groupIsActive = activeNode?.groupId === group.id;
 
 				group.nodes.forEach((node, index) => {
@@ -217,43 +255,58 @@
 						context.beginPath();
 						context.moveTo(from.x, from.y);
 						context.lineTo(to.x, to.y);
+						context.globalAlpha = Math.max(0.2, Math.min(0.8, 0.55 + (from.depth + to.depth) * 0.22));
 						context.strokeStyle = activeNode === from || activeNode === to
 							? `${group.color}cc`
 							: "#303030";
-						context.lineWidth = activeNode === from || activeNode === to ? 1.2 : 0.65;
+						context.lineWidth = (activeNode === from || activeNode === to ? 1.2 : 0.65)
+							* Math.max(0.8, Math.min(1.2, (from.radius + to.radius) / 4.6));
 						context.stroke();
 					});
 
 					context.beginPath();
 					context.moveTo(centerX, centerY);
 					context.lineTo(node.x, node.y);
+					context.globalAlpha = Math.max(0.2, Math.min(0.8, 0.55 + node.depth * 0.22));
 					context.strokeStyle = activeNode === node ? `${group.color}cc` : "#353535";
-					context.lineWidth = activeNode === node ? 1.3 : 0.65;
+					context.lineWidth = (activeNode === node ? 1.3 : 0.65)
+						* Math.max(0.8, Math.min(1.2, node.radius / 2.3));
 					context.stroke();
 				});
+			});
 
-				group.nodes.forEach((node) => {
-					context.beginPath();
-					context.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-					context.fillStyle = activeNode === node ? group.color : `${group.color}bb`;
-					context.fill();
-				});
-
+			[...nodes].sort((a, b) => a.depth - b.depth).forEach((node) => {
+				const group = groupById(node.groupId);
 				context.beginPath();
-				context.arc(centerX, centerY, groupIsActive ? 7 : 5, 0, Math.PI * 2);
+				context.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+				context.globalAlpha = Math.max(0.4, Math.min(1, 0.72 + node.depth * 0.35));
+				context.fillStyle = activeNode === node ? group.color : `${group.color}bb`;
+				context.fill();
+			});
+
+			groupNodes.forEach((group) => {
+				const centerX = group.screenX;
+				const centerY = group.screenY;
+				const groupIsActive = activeNode?.groupId === group.id;
+				context.globalAlpha = Math.max(0.55, Math.min(1, 0.78 + group.screenDepth * 0.3));
+				context.beginPath();
+				context.arc(centerX, centerY, (groupIsActive ? 7 : 5) * group.perspective, 0, Math.PI * 2);
 				context.fillStyle = "#0b0b0b";
 				context.fill();
-				context.lineWidth = groupIsActive ? 2 : 1.2;
+				context.lineWidth = (groupIsActive ? 2 : 1.2) * group.perspective;
 				context.strokeStyle = group.color;
 				context.stroke();
 				context.fillStyle = group.color;
-				context.font = "600 8px monospace";
-				context.textAlign = group.x < 0.5 ? "left" : "right";
-				context.textBaseline = group.y < 0.5 ? "bottom" : "top";
-				const labelX = centerX + (group.x < 0.5 ? 9 : -9);
-				const labelY = centerY + (group.y < 0.5 ? -8 : 8);
+				context.font = `600 ${8 * group.perspective}px monospace`;
+				const labelIsLeft = centerX < bounds.width / 2;
+				const labelIsAbove = centerY < bounds.height / 2;
+				context.textAlign = labelIsLeft ? "left" : "right";
+				context.textBaseline = labelIsAbove ? "bottom" : "top";
+				const labelX = centerX + (labelIsLeft ? 9 : -9) * group.perspective;
+				const labelY = centerY + (labelIsAbove ? -8 : 8) * group.perspective;
 				context.fillText(group.title, labelX, labelY);
 			});
+			context.globalAlpha = 1;
 		};
 
 		const nodeAt = (event) => {
@@ -360,6 +413,10 @@
 		};
 		const syncAnimation = () => {
 			stopAnimation();
+			if (motionPreference.matches) {
+				drawNetwork();
+				return;
+			}
 			if (canvasIsVisible && !document.hidden && !motionPreference.matches) {
 				animationFrame = requestAnimationFrame(animate);
 			}
