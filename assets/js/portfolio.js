@@ -294,8 +294,8 @@
 				setActiveNode(node);
 			}
 		});
-		canvas.addEventListener("pointerleave", (event) => {
-			if (!pinned && !figure.contains(event.relatedTarget)) {
+		figure.addEventListener("pointerleave", () => {
+			if (!pinned) {
 				setActiveNode(null);
 			}
 		});
@@ -329,16 +329,12 @@
 			button.addEventListener("mouseenter", activate);
 			button.addEventListener("focus", activate);
 			button.addEventListener("click", () => showGroup(button.dataset.mapGroup, true));
-			button.addEventListener("mouseleave", () => {
-				if (!pinned) {
-					setActiveNode(null);
-				}
-			});
-			button.addEventListener("blur", () => {
-				if (!pinned) {
-					setActiveNode(null);
-				}
-			});
+		});
+
+		figure.addEventListener("focusout", (event) => {
+			if (!pinned && !figure.contains(event.relatedTarget)) {
+				setActiveNode(null);
+			}
 		});
 
 		link.addEventListener("click", () => {
