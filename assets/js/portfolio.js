@@ -1,6 +1,141 @@
 (() => {
 	"use strict";
 
+	const initializeAnalyticsConsent = () => {
+		const panel = document.querySelector("[data-analytics-consent]");
+		const settingsButton = document.querySelector("[data-analytics-settings]");
+		if (!panel || !settingsButton) {
+			return;
+		}
+
+		const measurementId = panel.dataset.measurementId;
+		const acceptButton = panel.querySelector("[data-analytics-accept]");
+		const declineButton = panel.querySelector("[data-analytics-decline]");
+		const consentKey = "portfolio-analytics-consent";
+		let analyticsInitialized = false;
+		let settingsOpenedByUser = false;
+
+		const saveConsent = (choice) => {
+			try {
+				window.localStorage.setItem(consentKey, choice);
+			} catch (error) {
+				console.warn("Unable to save the analytics consent preference.", error);
+			}
+		};
+
+		const updateAnalyticsConsent = (consent) => {
+			window.gtag("consent", "update", {
+				analytics_storage: consent,
+				ad_storage: "denied",
+				ad_user_data: "denied",
+				ad_personalization: "denied"
+			});
+		};
+
+		const enableAnalytics = () => {
+			window[`ga-disable-${measurementId}`] = false;
+			if (analyticsInitialized) {
+				updateAnalyticsConsent("granted");
+				return;
+			}
+
+			window.dataLayer = window.dataLayer || [];
+			window.gtag = window.gtag || function () {
+				window.dataLayer.push(arguments);
+			};
+			window.gtag("consent", "default", {
+				analytics_storage: "denied",
+				ad_storage: "denied",
+				ad_user_data: "denied",
+				ad_personalization: "denied",
+				functionality_storage: "denied",
+				personalization_storage: "denied",
+				security_storage: "granted"
+			});
+			window.gtag("js", new Date());
+			updateAnalyticsConsent("granted");
+			window.gtag("config", measurementId, {
+				allow_google_signals: false,
+				allow_ad_personalization_signals: false
+			});
+
+			const script = document.createElement("script");
+			script.async = true;
+			script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+			script.onerror = () => {
+				console.error("Unable to load Google Analytics.");
+			};
+			document.head.append(script);
+			analyticsInitialized = true;
+		};
+
+		const clearAnalyticsCookies = () => {
+			const cookieNames = document.cookie
+				.split(";")
+				.map((cookie) => cookie.trim().split("=")[0])
+				.filter((name) => name === "_ga" || name.startsWith("_ga_"));
+			const hostParts = window.location.hostname.split(".");
+			const domains = hostParts
+				.map((_, index) => hostParts.slice(index).join("."))
+				.filter((domain) => domain.includes("."));
+
+			cookieNames.forEach((name) => {
+				document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+				domains.forEach((domain) => {
+					document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${domain}; SameSite=Lax`;
+				});
+			});
+		};
+
+		const closePanel = () => {
+			panel.hidden = true;
+			settingsButton.setAttribute("aria-expanded", "false");
+			if (settingsOpenedByUser) {
+				settingsButton.focus();
+			}
+			settingsOpenedByUser = false;
+		};
+
+		acceptButton.addEventListener("click", () => {
+			saveConsent("granted");
+			enableAnalytics();
+			closePanel();
+		});
+
+		declineButton.addEventListener("click", () => {
+			saveConsent("denied");
+			window[`ga-disable-${measurementId}`] = true;
+			if (analyticsInitialized) {
+				updateAnalyticsConsent("denied");
+			}
+			clearAnalyticsCookies();
+			closePanel();
+		});
+
+		settingsButton.addEventListener("click", () => {
+			settingsOpenedByUser = true;
+			panel.hidden = false;
+			settingsButton.setAttribute("aria-expanded", "true");
+			acceptButton.focus();
+		});
+
+		let savedConsent;
+		try {
+			savedConsent = window.localStorage.getItem(consentKey);
+		} catch (error) {
+			console.warn("Unable to read the analytics consent preference.", error);
+		}
+
+		if (savedConsent === "granted") {
+			enableAnalytics();
+		} else if (savedConsent !== "denied") {
+			panel.hidden = false;
+			settingsButton.setAttribute("aria-expanded", "true");
+		}
+	};
+
+	initializeAnalyticsConsent();
+
 	const year = document.getElementById("current-year");
 	if (year) {
 		year.textContent = new Date().getFullYear();

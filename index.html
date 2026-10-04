@@ -214,9 +214,20 @@ layout: null
 				<footer class="page-footer">
 					<p>© <span id="current-year"></span> {{ portfolio.profile.footer | escape }}</p>
 					<a href="#top">BACK TO TOP ↑</a>
+					<button class="analytics-settings" type="button" data-analytics-settings aria-controls="analytics-consent" aria-expanded="false">ANALYTICS SETTINGS</button>
 					<p>{{ portfolio.profile.footer_note | escape }} <span class="accent">✳</span></p>
 				</footer>
 			</main>
 		</div>
+		<aside class="analytics-consent" id="analytics-consent" data-analytics-consent data-measurement-id="G-56JG61GKWY" aria-labelledby="analytics-consent-title" hidden>
+			<div class="analytics-consent-copy">
+				<h2 id="analytics-consent-title">Privacy &amp; analytics</h2>
+				<p>Google Analytics is optional and will only run if you allow it. If enabled, Google receives usage data about your visit. You can change your choice at any time in Analytics settings. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>.</p>
+			</div>
+			<div class="analytics-consent-actions">
+				<button type="button" data-analytics-decline>Decline</button>
+				<button type="button" data-analytics-accept>Allow analytics</button>
+			</div>
+		</aside>
 	</body>
 </html>
